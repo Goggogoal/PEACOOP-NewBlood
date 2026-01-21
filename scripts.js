@@ -8,7 +8,7 @@
 // ============================================
 const CONFIG = {
     // Replace with your Google Sheets Web App URL
-    GOOGLE_SHEETS_API_URL: 'https://script.google.com/macros/s/AKfycbxI0O2U5KhwQHtgaMTwif9vFN_DjlTv7lCQpCiE74rm9OE7pi1gg69QTX1f5jJgs8Jxcw/exec',
+    GOOGLE_SHEETS_API_URL: 'https://script.google.com/macros/s/AKfycbxQPCHwxetfO-TZfxRR3X6g-M50R0XwAd654f7xCQNY56bORAvKCzNn6eBQilovPOdvUA/exec',
 
     // Animation settings
     animationDuration: 300,
@@ -242,24 +242,83 @@ async function loadAllData() {
 
 /**
  * Fetch data from Google Sheets via Apps Script Web App
+ * Uses fetch with redirect handling for cross-origin requests
  * @param {string} sheetName - Name of the sheet to fetch
  * @returns {Promise<Array>} - Array of data objects
  */
 async function fetchSheetData(sheetName) {
     try {
-        const response = await fetch(`${CONFIG.GOOGLE_SHEETS_API_URL}?sheet=${sheetName}`);
+        const url = `${CONFIG.GOOGLE_SHEETS_API_URL}?sheet=${sheetName}`;
+
+        // Try fetch with redirect following (required for Apps Script)
+        const response = await fetch(url, {
+            method: 'GET',
+            redirect: 'follow',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
 
         const data = await response.json();
+        console.log(`Loaded ${sheetName}:`, data);
         return data;
 
     } catch (error) {
-        console.error(`Error fetching ${sheetName}:`, error);
-        return null;
+        console.error(`Error fetching ${sheetName} with fetch, trying JSONP:`, error);
+
+        // Fallback to JSONP for CORS issues
+        return fetchWithJSONP(sheetName);
     }
+}
+
+/**
+ * JSONP fallback for cross-origin requests
+ * @param {string} sheetName - Name of the sheet to fetch
+ * @returns {Promise<Array>} - Array of data objects
+ */
+function fetchWithJSONP(sheetName) {
+    return new Promise((resolve, reject) => {
+        const callbackName = `jsonpCallback_${sheetName}_${Date.now()}`;
+        const url = `${CONFIG.GOOGLE_SHEETS_API_URL}?sheet=${sheetName}&callback=${callbackName}`;
+
+        // Create callback function
+        window[callbackName] = function (data) {
+            console.log(`JSONP loaded ${sheetName}:`, data);
+            resolve(data);
+
+            // Cleanup
+            delete window[callbackName];
+            document.head.removeChild(script);
+        };
+
+        // Create script element
+        const script = document.createElement('script');
+        script.src = url;
+        script.onerror = function () {
+            console.error(`JSONP error for ${sheetName}`);
+            reject(new Error(`JSONP failed for ${sheetName}`));
+            delete window[callbackName];
+            document.head.removeChild(script);
+        };
+
+        // Set timeout
+        setTimeout(() => {
+            if (window[callbackName]) {
+                console.error(`JSONP timeout for ${sheetName}`);
+                reject(new Error(`JSONP timeout for ${sheetName}`));
+                delete window[callbackName];
+                if (script.parentNode) {
+                    document.head.removeChild(script);
+                }
+            }
+        }, 10000);
+
+        document.head.appendChild(script);
+    });
 }
 
 /**

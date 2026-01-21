@@ -16,9 +16,20 @@
 // Main Entry Point - Handle GET Requests
 // ============================================
 function doGet(e) {
-    // Enable CORS
     const response = handleRequest(e);
-    return ContentService.createTextOutput(JSON.stringify(response))
+    const jsonResponse = JSON.stringify(response);
+
+    // Check for JSONP callback
+    const callback = e.parameter.callback;
+
+    if (callback) {
+        // Return JSONP format for cross-origin requests
+        return ContentService.createTextOutput(callback + '(' + jsonResponse + ')')
+            .setMimeType(ContentService.MimeType.JAVASCRIPT);
+    }
+
+    // Return regular JSON (works with Apps Script's built-in CORS handling)
+    return ContentService.createTextOutput(jsonResponse)
         .setMimeType(ContentService.MimeType.JSON);
 }
 
