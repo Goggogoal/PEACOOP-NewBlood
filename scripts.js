@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollAnimations();
 
     // Load data from Google Sheets (when configured)
-    if (CONFIG.GOOGLE_SHEETS_API_URL !== 'https://script.google.com/macros/s/AKfycbxI0O2U5KhwQHtgaMTwif9vFN_DjlTv7lCQpCiE74rm9OE7pi1gg69QTX1f5jJgs8Jxcw/exec') {
+    if (CONFIG.GOOGLE_SHEETS_API_URL && CONFIG.GOOGLE_SHEETS_API_URL.includes('script.google.com')) {
         loadAllData();
     }
 });
