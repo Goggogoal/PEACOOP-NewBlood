@@ -7,7 +7,7 @@
     <meta name="description"
         content="เลือกตั้งกรรมการสหกรณ์ กฟภ. เบอร์ 9 และ เบอร์ 10 - บริการทันสมัย ยอดกู้รู้ไว จองคิวทันใจ โปร่งใสทุกขั้นตอน">
     <meta name="keywords" content="สหกรณ์ กฟภ, เลือกตั้งกรรมการ, เบอร์ 9, เบอร์ 10">
-    <title>เลือก เบอร์ 9 & 10 | กรรมการสหกรณ์ กฟภ.</title>
+    <title>เลือก เบอร์ 9 & 10 | เป็นกรรมการสหกรณ์ กฟภ.</title>
 
     <!-- Google Fonts - Noto Sans Thai -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,9 +26,9 @@
     <nav class="navbar" id="navbar">
         <div class="nav-container">
             <a href="#" class="nav-logo">
-                <span class="logo-number">9</span>
-                <span class="logo-ampersand">&</span>
-                <span class="logo-number">10</span>
+                <img src="https://lh3.googleusercontent.com/d/1NN0tMx3p2RnLTycCoe9Js503t3AsACSc" alt="PEA COOP 9&10"
+                    class="logo-image">
+                <span class="footer-logo-text">ทีมสหกรณ์' 90</span>
             </a>
 
             <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
@@ -41,6 +41,7 @@
                 <li><a href="#candidates" class="nav-link">ประวัติผู้สมัคร</a></li>
                 <li><a href="#articles" class="nav-link">บทความ</a></li>
                 <li><a href="#downloads" class="nav-link">ดาวน์โหลด</a></li>
+                <li><a href="#opinions" class="nav-link">ความคิดเห็น</a></li>
                 <li><a href="#contact" class="nav-link nav-cta">ติดต่อเรา</a></li>
             </ul>
         </div>
@@ -76,7 +77,7 @@
                     <!-- Center Slogan -->
                     <div class="hero-slogan" data-aos="fade-up">
                         <div class="slogan-badge">
-                            <span>เลือกตั้งกรรมการสหกรณ์ กฟภ.</span>
+                            <span>ทีมสหกรณ์' 90</span>
                         </div>
                         <h1 class="slogan-main">
                             <span class="slogan-line">บริการทันสมัย</span>
@@ -228,11 +229,11 @@
                             <div class="profile-stats">
                                 <div class="stat-item">
                                     <span class="stat-value" id="profile9-experience">-</span>
-                                    <span class="stat-label">ปีประสบการณ์</span>
+                                    <span class="stat-label">อายุ</span>
                                 </div>
                                 <div class="stat-item">
                                     <span class="stat-value" id="profile9-projects">-</span>
-                                    <span class="stat-label">โครงการ</span>
+                                    <span class="stat-label">ประสบการณ์ทำงาน</span>
                                 </div>
                             </div>
                         </div>
@@ -271,11 +272,11 @@
                             <div class="profile-stats">
                                 <div class="stat-item">
                                     <span class="stat-value" id="profile10-experience">-</span>
-                                    <span class="stat-label">ปีประสบการณ์</span>
+                                    <span class="stat-label">อายุ</span>
                                 </div>
                                 <div class="stat-item">
                                     <span class="stat-value" id="profile10-projects">-</span>
-                                    <span class="stat-label">โครงการ</span>
+                                    <span class="stat-label">ประสบการณ์ทำงาน</span>
                                 </div>
                             </div>
                         </div>
@@ -378,12 +379,18 @@
     <section class="downloads" id="downloads">
         <div class="container">
             <div class="section-header" data-aos="fade-up">
-                <span class="section-badge">เอกสาร</span>
+                <span class="section-badge">ข้อมูลสำคัญ</span>
                 <h2 class="section-title">ดาวน์โหลดเอกสาร</h2>
-                <p class="section-subtitle">เอกสารนโยบายและข้อมูลสำคัญสำหรับสมาชิก</p>
+                <p class="section-subtitle">เอกสาร กฎระเบียบ และข้อมูลสำคัญสำหรับสมาชิก</p>
             </div>
 
-            <div class="downloads-list" id="downloadsList">
+            <!-- Search Box -->
+            <div class="downloads-search" data-aos="fade-up">
+                <i class="fas fa-search"></i>
+                <input type="text" id="downloadSearch" placeholder="ค้นหาเอกสาร..." class="search-input">
+            </div>
+
+            <div class="downloads-grid" id="downloadsList">
                 <!-- Download items will be loaded from Google Sheets -->
                 <div class="download-item" data-aos="fade-up" data-aos-delay="100">
                     <div class="download-icon">
@@ -439,6 +446,65 @@
         </div>
     </section>
 
+    <!-- Opinion Section -->
+    <section class="opinions" id="opinions">
+        <div class="container">
+            <div class="section-header" data-aos="fade-up">
+                <span class="section-badge">ความคิดเห็น</span>
+                <h2 class="section-title">แบ่งปันความคิดเห็นของคุณ</h2>
+                <p class="section-subtitle">เราต้องการรับฟังความคิดเห็นและข้อเสนอแนะจากทุกท่าน</p>
+            </div>
+
+            <div class="opinion-wrapper">
+                <!-- Left Column: Opinion Form -->
+                <div class="opinion-form-container" data-aos="fade-right">
+                    <form id="opinionForm" class="opinion-form">
+                        <div class="form-group">
+                            <label for="opinionTitle">หัวข้อ</label>
+                            <input type="text" id="opinionTitle" name="title" class="form-input"
+                                placeholder="ระบุหัวข้อความคิดเห็น" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="opinionTags">แท็ก (คั่นด้วยเครื่องหมายจุลภาค)</label>
+                            <input type="text" id="opinionTags" name="tags" class="form-input"
+                                placeholder="เช่น นโยบาย, บริการ, เทคโนโลยี" required>
+                            <small class="form-hint">ใช้เครื่องหมายจุลภาค (,) เพื่อแยกแท็กแต่ละตัว</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="opinionDetails">รายละเอียดความคิดเห็น</label>
+                            <textarea id="opinionDetails" name="details" class="form-textarea" rows="6"
+                                placeholder="แบ่งปันความคิดเห็นและข้อเสนอแนะของคุณที่นี่" required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-large">
+                            <i class="fas fa-paper-plane"></i>
+                            ส่งความคิดเห็น
+                        </button>
+                    </form>
+
+                    <div id="formMessage" class="form-message"></div>
+                </div>
+
+                <!-- Right Column: Word Cloud -->
+                <div class="wordcloud-container" data-aos="fade-left">
+                    <h3 class="wordcloud-title">
+                        <i class="fas fa-tags"></i>
+                        แท็กที่ได้รับความนิยม
+                    </h3>
+                    <div id="wordCloud" class="wordcloud-display">
+                        <div class="wordcloud-loading">
+                            <i class="fas fa-spinner fa-spin"></i>
+                            <p>กำลังโหลดข้อมูล...</p>
+                        </div>
+                    </div>
+                    <p class="wordcloud-caption">ขนาดของแท็กแสดงความถี่ของการใช้งาน</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Contact Section -->
     <section class="contact" id="contact">
         <div class="container">
@@ -451,35 +517,20 @@
                     </p>
 
                     <div class="contact-channels">
-                        <a href="#" class="contact-channel">
-                            <div class="channel-icon">
-                                <i class="fab fa-line"></i>
-                            </div>
-                            <div class="channel-info">
-                                <span class="channel-label">LINE Official</span>
-                                <span class="channel-value">@pea-coop-910</span>
-                            </div>
-                        </a>
 
-                        <a href="#" class="contact-channel">
+
+                        <a href="https://www.facebook.com/profile.php?id=61587015837909" class="contact-channel">
                             <div class="channel-icon">
                                 <i class="fab fa-facebook-f"></i>
                             </div>
                             <div class="channel-info">
                                 <span class="channel-label">Facebook</span>
-                                <span class="channel-value">เบอร์ 9 & 10 สหกรณ์ กฟภ.</span>
+                                <span class="channel-value">ผู้สมัครรับเลือกตั้งคณะกรรมการสหกรณ์พนักงาน กฟภ. หมายเลข 9
+                                    และ 10</span>
                             </div>
                         </a>
 
-                        <a href="mailto:contact@example.com" class="contact-channel">
-                            <div class="channel-icon">
-                                <i class="fas fa-envelope"></i>
-                            </div>
-                            <div class="channel-info">
-                                <span class="channel-label">Email</span>
-                                <span class="channel-value">contact@example.com</span>
-                            </div>
-                        </a>
+
                     </div>
                 </div>
 
@@ -492,6 +543,29 @@
                         </div>
                         <h3 class="cta-title">เลือกเรา เพื่ออนาคตที่ดีกว่า</h3>
                         <p class="cta-subtitle">บริการทันสมัย โปร่งใส เพื่อสมาชิกทุกคน</p>
+
+                        <!-- Countdown Timer -->
+                        <div class="countdown-timer" id="countdownTimer">
+                            <div class="countdown-label">นับถอยหลังสู่วันเลือกตั้ง</div>
+                            <div class="countdown-display">
+                                <div class="countdown-item">
+                                    <span class="countdown-value" id="countdownDays">00</span>
+                                    <span class="countdown-unit">วัน</span>
+                                </div>
+                                <div class="countdown-separator">:</div>
+                                <div class="countdown-item">
+                                    <span class="countdown-value" id="countdownHours">00</span>
+                                    <span class="countdown-unit">ชั่วโมง</span>
+                                </div>
+                                <div class="countdown-separator">:</div>
+                                <div class="countdown-item">
+                                    <span class="countdown-value" id="countdownMinutes">00</span>
+                                    <span class="countdown-unit">นาที</span>
+                                </div>
+                            </div>
+                            <div class="countdown-date">27 กุมภาพันธ์ 2569 เวลา 08:30 น.</div>
+                        </div>
+
                         <a href="#policies" class="btn btn-primary btn-large">
                             <i class="fas fa-star"></i>
                             ดูนโยบายทั้งหมด
@@ -508,9 +582,9 @@
             <div class="footer-content">
                 <div class="footer-brand">
                     <div class="footer-logo">
-                        <span class="logo-number">9</span>
-                        <span class="logo-ampersand">&</span>
-                        <span class="logo-number">10</span>
+                        <img src="https://lh3.googleusercontent.com/d/1NN0tMx3p2RnLTycCoe9Js503t3AsACSc"
+                            alt="PEA COOP 9&10" class="footer-logo-image">
+                        <span class="footer-logo-text">ทีมสหกรณ์' 90</span>
                     </div>
                     <p class="footer-tagline">บริการทันสมัย ยอดกู้รู้ไว<br>จองคิวทันใจ โปร่งใสทุกขั้นตอน</p>
                 </div>

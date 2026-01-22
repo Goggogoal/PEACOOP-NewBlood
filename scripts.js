@@ -8,7 +8,7 @@
 // ============================================
 const CONFIG = {
     // Replace with your Google Sheets Web App URL
-    GOOGLE_SHEETS_API_URL: 'https://script.google.com/macros/s/AKfycbxQPCHwxetfO-TZfxRR3X6g-M50R0XwAd654f7xCQNY56bORAvKCzNn6eBQilovPOdvUA/exec',
+    GOOGLE_SHEETS_API_URL: 'https://script.google.com/macros/s/AKfycbyfBiSU_PZHxDRl3uOqs9oGIAnyRofnMejNYSP10L1VTYlwXaU3WsTau7LQW8zXTwnHpg/exec',
 
     // Animation settings
     animationDuration: 300,
@@ -42,6 +42,8 @@ document.addEventListener('DOMContentLoaded', () => {
     initScrollEffects();
     initCandidateTabs();
     initScrollAnimations();
+    initCountdown();
+    initOpinionSection();
 
     // Load data from Google Sheets (when configured)
     if (CONFIG.GOOGLE_SHEETS_API_URL && CONFIG.GOOGLE_SHEETS_API_URL.includes('script.google.com')) {
@@ -145,6 +147,194 @@ function initCandidateTabs() {
             targetProfile?.classList.add('active');
         });
     });
+}
+
+// ============================================
+// Countdown Timer
+// ============================================
+function initCountdown() {
+    // Election Date: February 27, 2026 at 08:30 (Thai time)
+    const electionDate = new Date('2026-02-27T08:30:00+07:00');
+
+    function updateCountdown() {
+        const now = new Date();
+        const timeLeft = electionDate - now;
+
+        // Check if election has passed
+        if (timeLeft < 0) {
+            document.getElementById('countdownDays').textContent = '00';
+            document.getElementById('countdownHours').textContent = '00';
+            document.getElementById('countdownMinutes').textContent = '00';
+            return;
+        }
+
+        // Calculate days, hours, minutes
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+
+        // Update display (with leading zeros)
+        document.getElementById('countdownDays').textContent = String(days).padStart(2, '0');
+        document.getElementById('countdownHours').textContent = String(hours).padStart(2, '0');
+        document.getElementById('countdownMinutes').textContent = String(minutes).padStart(2, '0');
+    }
+
+    // Update immediately
+    updateCountdown();
+
+    // Update every minute (60000 milliseconds)
+    setInterval(updateCountdown, 60000);
+}
+
+// ============================================
+// Opinion Section
+// ============================================
+function initOpinionSection() {
+    const form = document.getElementById('opinionForm');
+    const formMessage = document.getElementById('formMessage');
+
+    if (form) {
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const title = document.getElementById('opinionTitle').value.trim();
+            const tags = document.getElementById('opinionTags').value.trim();
+            const details = document.getElementById('opinionDetails').value.trim();
+
+            if (!title || !tags || !details) {
+                showFormMessage('กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
+                return;
+            }
+
+
+            // Use JSONP to avoid CORS issues
+            const callbackName = 'opinionCallback_' + Date.now();
+
+            window[callbackName] = function (response) {
+                if (response && response.success) {
+                    showFormMessage('ส่งความคิดเห็นสำเร็จ! ขอบคุณที่แบ่งปันความคิดเห็น', 'success');
+                    form.reset();
+                    setTimeout(() => loadWordCloud(), 2000);
+                } else {
+                    showFormMessage('เกิดข้อผิดพลาด: ' + (response?.error || 'ไม่สามารถบันทึกข้อมูลได้'), 'error');
+                }
+                delete window[callbackName];
+            };
+
+            const params = new URLSearchParams({
+                action: 'addOpinion',
+                title: title,
+                tags: tags,
+                details: details,
+                timestamp: new Date().toISOString(),
+                callback: callbackName
+            });
+
+            const script = document.createElement('script');
+            script.src = `${CONFIG.GOOGLE_SHEETS_API_URL}?${params.toString()}`;
+            script.onerror = function () {
+                showFormMessage('ไม่สามารถเชื่อมต่อได้ กรุณาลองใหม่อีกครั้ง', 'error');
+                delete window[callbackName];
+            };
+
+            document.head.appendChild(script);
+            setTimeout(() => {
+                if (script.parentNode) {
+                    script.parentNode.removeChild(script);
+                }
+            }, 10000);
+        });
+    }
+
+    // Load word cloud on page load
+    loadWordCloud();
+}
+
+function showFormMessage(message, type) {
+    const formMessage = document.getElementById('formMessage');
+    if (formMessage) {
+        formMessage.textContent = message;
+        formMessage.className = `form-message ${type}`;
+
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            formMessage.className = 'form-message';
+        }, 5000);
+    }
+}
+
+async function loadWordCloud() {
+    const wordCloudContainer = document.getElementById('wordCloud');
+    if (!wordCloudContainer) return;
+
+    // Use JSONP to load opinions
+    const callbackName = 'wordCloudCallback_' + Date.now();
+
+    window[callbackName] = function (data) {
+        if (data && data.opinions && data.opinions.length > 0) {
+            generateWordCloud(data.opinions);
+        } else {
+            wordCloudContainer.innerHTML = '<p style="color: var(--text-secondary);">ยังไม่มีแท็กในระบบ</p>';
+        }
+        delete window[callbackName];
+    };
+
+    const script = document.createElement('script');
+    script.src = `${CONFIG.GOOGLE_SHEETS_API_URL}?sheet=Opinion&callback=${callbackName}`;
+    script.onerror = function () {
+        wordCloudContainer.innerHTML = '<p style="color: var(--text-secondary);">ไม่สามารถโหลดข้อมูลได้</p>';
+        delete window[callbackName];
+    };
+
+    document.head.appendChild(script);
+    setTimeout(() => {
+        if (script.parentNode) {
+            script.parentNode.removeChild(script);
+        }
+    }, 10000);
+}
+
+function generateWordCloud(opinions) {
+    const wordCloudContainer = document.getElementById('wordCloud');
+    if (!wordCloudContainer) return;
+
+    // Count tag frequencies (unique tags per submission)
+    const tagCounts = {};
+    opinions.forEach(opinion => {
+        if (opinion.tags) {
+            // Use Set to get unique tags per submission
+            const tags = opinion.tags.split(',').map(tag => tag.trim().toLowerCase());
+            const uniqueTags = [...new Set(tags)]; // Remove duplicates within same submission
+            uniqueTags.forEach(tag => {
+                if (tag) {
+                    tagCounts[tag] = (tagCounts[tag] || 0) + 1;
+                }
+            });
+        }
+    });
+
+    // Convert to array and sort by frequency
+    const sortedTags = Object.entries(tagCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 30); // Top 30 tags
+
+    if (sortedTags.length === 0) {
+        wordCloudContainer.innerHTML = '<p style="color: var(--text-secondary);">ยังไม่มีแท็กในระบบ</p>';
+        return;
+    }
+
+    // Find max and min counts for scaling
+    const maxCount = sortedTags[0][1];
+    const minCount = sortedTags[sortedTags.length - 1][1];
+
+    // Generate HTML
+    wordCloudContainer.innerHTML = sortedTags.map(([tag, count]) => {
+        // Scale font size between 0.875rem and 2rem
+        const scale = (count - minCount) / (maxCount - minCount || 1);
+        const fontSize = 0.875 + (scale * 1.125);
+
+        return `<span class="wordcloud-tag" style="font-size: ${fontSize}rem;" title="${count} ครั้ง">${tag}</span>`;
+    }).join('');
 }
 
 // ============================================
@@ -330,11 +520,11 @@ function updateCandidateImages(candidates) {
         const num = candidate.candidateNumber;
         const imageUrl = candidate.imageUrl;
 
-        // Update Hero section images
-        const heroImage = document.getElementById(`candidate${num}-image`);
-        if (heroImage && imageUrl) {
-            heroImage.src = imageUrl;
-        }
+        // Update Hero section images ***Decided to not update Hero images***
+        //const heroImage = document.getElementById(`candidate${num}-image`);
+        //if (heroImage && imageUrl) {
+        //    heroImage.src = imageUrl;
+        //}
 
         // Update Profile section images
         const profileImage = document.getElementById(`profile${num}-image`);
@@ -358,6 +548,8 @@ function updateCandidateImages(candidates) {
             profileProjects.textContent = candidate.projects;
         }
     });
+
+    console.log('Candidates section updated successfully');
 }
 
 /**
@@ -439,10 +631,23 @@ function updateArticles(articles) {
  * Update downloads section from Google Sheets data
  * Expected data structure: [{ filename: '...', fileType: 'PDF', fileSize: '2.5 MB', url: '...' }]
  */
+let allDownloads = []; // Store all downloads for filtering
+const INITIAL_DISPLAY_COUNT = 9; // Show 9 items initially (3 rows x 3 columns)
+
 function updateDownloads(downloads) {
     if (!elements.downloadsList || downloads.length === 0) return;
 
-    elements.downloadsList.innerHTML = downloads.map((file, index) => `
+    allDownloads = downloads; // Store for filtering
+    renderDownloads(allDownloads);
+    initDownloadSearch();
+}
+
+function renderDownloads(downloads, showAll = false) {
+    const container = elements.downloadsList;
+    const itemsToShow = showAll ? downloads : downloads.slice(0, INITIAL_DISPLAY_COUNT);
+    const hasMore = downloads.length > INITIAL_DISPLAY_COUNT;
+
+    container.innerHTML = itemsToShow.map((file, index) => `
         <div class="download-item" data-aos="fade-up" data-aos-delay="${(index + 1) * 100}">
             <div class="download-icon">
                 <i class="fas ${getFileIcon(file.fileType)}"></i>
@@ -461,8 +666,77 @@ function updateDownloads(downloads) {
         </div>
     `).join('');
 
+    // Add show more/less button if needed
+    updateShowMoreButton(downloads, showAll, hasMore);
+
     // Re-initialize animations for new elements
     initScrollAnimations();
+}
+
+function updateShowMoreButton(downloads, showAll, hasMore) {
+    const downloadsSection = document.getElementById('downloads');
+    let buttonContainer = downloadsSection.querySelector('.show-more-container');
+
+    // Remove existing button
+    if (buttonContainer) {
+        buttonContainer.remove();
+    }
+
+    // Add button if there are more items
+    if (hasMore && !showAll) {
+        buttonContainer = document.createElement('div');
+        buttonContainer.className = 'show-more-container';
+        buttonContainer.innerHTML = `
+            <button class="show-more-btn" onclick="toggleShowMore(true)">
+                <span>แสดงเพิ่มเติม</span>
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        `;
+        downloadsSection.querySelector('.container').appendChild(buttonContainer);
+    } else if (showAll && downloads.length > INITIAL_DISPLAY_COUNT) {
+        buttonContainer = document.createElement('div');
+        buttonContainer.className = 'show-more-container';
+        buttonContainer.innerHTML = `
+            <button class="show-more-btn" onclick="toggleShowMore(false)">
+                <span>แสดงน้อยลง</span>
+                <i class="fas fa-chevron-up"></i>
+            </button>
+        `;
+        downloadsSection.querySelector('.container').appendChild(buttonContainer);
+    }
+}
+
+// Global function for show more/less
+window.toggleShowMore = function (showAll) {
+    const searchInput = document.getElementById('downloadSearch');
+    const searchTerm = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+    let filteredDownloads = allDownloads;
+    if (searchTerm) {
+        filteredDownloads = allDownloads.filter(file =>
+            file.filename.toLowerCase().includes(searchTerm)
+        );
+    }
+
+    renderDownloads(filteredDownloads, showAll);
+};
+
+function initDownloadSearch() {
+    const searchInput = document.getElementById('downloadSearch');
+    if (!searchInput) return;
+
+    searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase().trim();
+
+        if (searchTerm === '') {
+            renderDownloads(allDownloads, false);
+        } else {
+            const filtered = allDownloads.filter(file =>
+                file.filename.toLowerCase().includes(searchTerm)
+            );
+            renderDownloads(filtered, true); // Show all filtered results
+        }
+    });
 }
 
 /**
