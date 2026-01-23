@@ -198,11 +198,16 @@ function initOpinionSection() {
             e.preventDefault();
 
             const title = document.getElementById('opinionTitle').value.trim();
-            const tags = document.getElementById('opinionTags').value.trim();
+
+            // Collect selected checkboxes
+            const selectedTags = Array.from(document.querySelectorAll('input[name="tags"]:checked'))
+                .map(checkbox => checkbox.value);
+            const tags = selectedTags.join(',');
+
             const details = document.getElementById('opinionDetails').value.trim();
 
             if (!title || !tags || !details) {
-                showFormMessage('กรุณากรอกข้อมูลให้ครบถ้วน', 'error');
+                showFormMessage('กรุณากรอกข้อมูลให้ครบถ้วน (โปรดเลือกแท็กอย่างน้อย 1 รายการ)', 'error');
                 return;
             }
 
