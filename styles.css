@@ -1964,7 +1964,7 @@ section {
         width: 80%;
         max-width: 320px;
         height: 100vh;
-        background: var(--dark);
+        background: var(--white);
         flex-direction: column;
         justify-content: center;
         gap: var(--space-6);
@@ -2137,4 +2137,5 @@ section {
         padding: 1rem 0;
         page-break-inside: avoid;
     }
+
 }
