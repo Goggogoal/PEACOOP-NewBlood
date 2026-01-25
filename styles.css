@@ -11,6 +11,10 @@
     --pea-yellow-dark: #E09100;
     --pea-yellow-gradient: linear-gradient(135deg, #F5A623 0%, #FFD93D 100%);
     --pea-yellow-soft: rgba(245, 166, 35, 0.1);
+    --pea-red: #E84C3D;
+    --pea-red-light: #FF6B5B;
+    --pea-red-dark: #C0392B;
+    --pea-red-gradient: linear-gradient(135deg, #E84C3D 0%, #e69f97 100%);
 
     /* Accent Colors - Red/Orange */
     --action-red: #E84C3D;
@@ -1093,6 +1097,36 @@ section {
     line-height: 1.6;
 }
 
+/* Candidate Message Box */
+.candidate-message {
+    background: var(--white);
+    border: 3px solid var(--action-red);
+    border-radius: var(--radius-2xl);
+    padding: var(--space-6);
+    margin-top: var(--space-6);
+    box-shadow: var(--shadow-md);
+}
+
+.candidate-message .message-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+    color: var(--action-red);
+    font-weight: 700;
+    font-size: var(--font-size-lg);
+}
+
+.candidate-message .message-header i {
+    font-size: var(--font-size-xl);
+}
+
+.candidate-message .message-text {
+    color: var(--text-primary);
+    line-height: 1.8;
+    font-size: var(--font-size-base);
+}
+
 /* ============================================
    Articles Section
    ============================================ */
@@ -1667,7 +1701,7 @@ section {
 .cta-number {
     font-size: var(--font-size-6xl);
     font-weight: 900;
-    background: var(--pea-yellow-gradient);
+    background: var(--pea-red-gradient);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -1676,6 +1710,7 @@ section {
 
 .cta-ampersand {
     font-size: var(--font-size-4xl);
+    font-weight: 900;
     color: var(--white);
     opacity: 0.5;
 }
@@ -1800,6 +1835,36 @@ section {
 .footer-tagline {
     color: var(--gray-300);
     line-height: 1.8;
+}
+
+.footer-coop-link {
+    display: inline-block;
+    margin-top: var(--space-4);
+    color: var(--gray-300);
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    text-decoration: none;
+    transition: var(--transition-base);
+}
+
+.footer-coop-link:hover {
+    color: var(--action-red-hover);
+    text-decoration: underline;
+}
+
+.footer-face-link {
+    display: inline-block;
+    margin-top: var(--space-4);
+    color: var(--gray-300);
+    font-weight: 600;
+    font-size: var(--font-size-base);
+    text-decoration: none;
+    transition: var(--transition-base);
+}
+
+.footer-face-link:hover {
+    color: var(--action-red-hover);
+    text-decoration: underline;
 }
 
 .footer-links h4,
@@ -2231,7 +2296,4 @@ section {
         page-break-inside: avoid;
     }
 
-
 }
-
-
